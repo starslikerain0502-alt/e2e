@@ -1,5 +1,53 @@
 # e2e
 
+## 0.22.1
+
+### Patch Changes
+
+- [#1479](https://github.com/tester-army/e2e/pull/1479) [`d15a98e`](https://github.com/tester-army/e2e/commit/d15a98e0711a185873a7a57a108dd254673e327c) Thanks [@okwasniewski](https://github.com/okwasniewski)! - `app.baseUrl` no longer ends in a slash, so `${app.baseUrl}/api/users` requests `/api/users` instead of `//api/users`. With `test` from `@e2e-dev/web`, `app.baseUrl` is typed `string`, since a `web()` target always declares `app.url`. A test that relied on the trailing slash, such as `${app.baseUrl}api/users` or `new URL('users', app.baseUrl)` on a URL with a path, adds the slash itself.
+
+- [#1491](https://github.com/tester-army/e2e/pull/1491) [`108bc60`](https://github.com/tester-army/e2e/commit/108bc604cdcfcfacc8ab66bd179c408bf6887ccf) Thanks [@okwasniewski](https://github.com/okwasniewski)! - Bump @agentclientprotocol/sdk to 2.2.0, @ai-sdk/provider to 4.0.35, and oxc to 0.156.0.
+
+- [#1516](https://github.com/tester-army/e2e/pull/1516) [`0410fc9`](https://github.com/tester-army/e2e/commit/0410fc9c74ffac45d5174b7a3a5b3e6f15fdf32f) Thanks [@okwasniewski](https://github.com/okwasniewski)! - Bump agent-device to 0.21.36, @agentclientprotocol/sdk to 2.4.0, @vitest/expect to 5.1.0, and oxc to 0.157.0.
+
+- [#1451](https://github.com/tester-army/e2e/pull/1451) [`b4dd4bd`](https://github.com/tester-army/e2e/commit/b4dd4bd20db47f2a13a89f6dc8c2242cf0fc17a1) Thanks [@amoscicki](https://github.com/amoscicki)! - The run summary's `Cache` line counts the steps of passing and flaky tests whose recording was not saved (`step.cache.write` of `unconfirmed`, `no-change`, or `not-written` in the attempt that passed), such as `4 missed · 1 not saved`.
+
+- [#1493](https://github.com/tester-army/e2e/pull/1493) [`91bd614`](https://github.com/tester-army/e2e/commit/91bd61490d20c7536a77ed5ed74e556a856da738) Thanks [@okwasniewski](https://github.com/okwasniewski)! - Add `e2e doctor`: checks that `e2e run` can start without starting anything. It covers the Node.js runtime, the config and its targets, each engine's own checks, and the model each agent resolved to. `--json` prints the `doctor-1` report for a host, `--check-model` calls each model once, and the command exits 2 when a check failed. Engines can report their checks through the new optional `doctor` hook.
+
+- [#1478](https://github.com/tester-army/e2e/pull/1478) [`2208056`](https://github.com/tester-army/e2e/commit/22080566738afd2a987ce86d156b27112ba571b0) Thanks [@okwasniewski](https://github.com/okwasniewski)! - `CONFIG_NOT_FOUND` for an explicit config path (`--config <path>`, the MCP `open_session` `config` input, or `openHost({ config: '<path>' })`) now names the absolute path it checked and, for a relative path, the working directory it resolved against.
+
+- [#1232](https://github.com/tester-army/e2e/pull/1232) [`3f43edd`](https://github.com/tester-army/e2e/commit/3f43edd166c6ebbe491b1610abd38d4f8e655459) Thanks [@okwasniewski](https://github.com/okwasniewski)! - Add the engine protocol: `connectEngine`, `serveEngine`, and transports in `e2e/engine` run an engine in another process, on another machine, or in another language over LSP-style JSON-RPC. Every engine built with `defineEngine` now runs through the protocol in process, so the harness drives every engine the same way.
+  
+  `Engine.dispose` now runs only once `init` was called, even when `init` failed. A worker that never initialized no longer disposes its engine.
+
+- [#1480](https://github.com/tester-army/e2e/pull/1480) [`723c1af`](https://github.com/tester-army/e2e/commit/723c1af84ebe70e7c702d5790ae4821c7a8b54b0) Thanks [@okwasniewski](https://github.com/okwasniewski)! - A failed test's block in the terminal and in `summary.md` quotes the first 3 errors the app logged (console errors, uncaught exceptions, failed requests, 5xx responses), so an app error behind a locator failure shows without opening `trace.md`.
+
+- [#1499](https://github.com/tester-army/e2e/pull/1499) [`1d671f6`](https://github.com/tester-army/e2e/commit/1d671f6786b1eff4b43718ddc413b0bfa21abbcb) Thanks [@okwasniewski](https://github.com/okwasniewski)! - The markdown report footer (`summary.md`, the `@e2e-dev/github` pull request comment and job summary) now reads `Tested by e2e <version> · ...`, with `e2e` linking to https://e2e.tester.army.
+
+- [#1464](https://github.com/tester-army/e2e/pull/1464) [`57f9ed9`](https://github.com/tester-army/e2e/commit/57f9ed9eda7469535fba72bd24f9ff2ce7ad023e) Thanks [@okwasniewski](https://github.com/okwasniewski)! - `locator.waitFor`, `expect` on a locator, and `toHaveScreenshot` give their last read extra time past the timeout, up to their slowest read so far and within the test timeout, so a screen that shows up during a slow last read still passes.
+
+- [#1482](https://github.com/tester-army/e2e/pull/1482) [`d94593b`](https://github.com/tester-army/e2e/commit/d94593b0c1c783f887ae130e64b2c25c3ec94b30) Thanks [@okwasniewski](https://github.com/okwasniewski)! - The `list` reporter prints each test as it finishes when stdout is not a terminal (piped, redirected, most CI), instead of only once its whole file finishes, and ends every run with a `Failed` row per failed test (`file:line`, the error's first line, the trace page when one was written), so `e2e run | tail` still names what broke.
+
+- [#1416](https://github.com/tester-army/e2e/pull/1416) [`79e2e13`](https://github.com/tester-army/e2e/commit/79e2e13d3365da30b8f85ff08670f888bfc12b57) Thanks [@DeryFerd](https://github.com/DeryFerd)! - Filtered-locator failures can list how many candidates each filter step left, when the post-failure diagnostic pass can read the chain, so a step that narrowed too much or too little names itself. The message says the counts were read then.
+
+- [#1498](https://github.com/tester-army/e2e/pull/1498) [`4b56473`](https://github.com/tester-army/e2e/commit/4b56473e59645ed7234347c5080aa2ed3b2f0ae5) Thanks [@21prnv](https://github.com/21prnv)! - A replay no longer fails its end check on a date written with an ordinal suffix, such as `October 26th` or `3rd October`, when the day differs from the recording.
+
+- [#1493](https://github.com/tester-army/e2e/pull/1493) [`91bd614`](https://github.com/tester-army/e2e/commit/91bd61490d20c7536a77ed5ed74e556a856da738) Thanks [@okwasniewski](https://github.com/okwasniewski)! - A model call without a response schema that the provider ends on an `error` finish now fails as `MODEL_PROVIDER_FAILED` instead of `MODEL_OUTPUT_INVALID`.
+
+- [#1500](https://github.com/tester-army/e2e/pull/1500) [`7b1b8b2`](https://github.com/tester-army/e2e/commit/7b1b8b27d8212212923934fdd99b4a7050746823) Thanks [@bheemreddy-samsara](https://github.com/bheemreddy-samsara)! - Add coordinates to `agent.act`'s `onAction` event: narrow on `event.action` to read `point` for `tapAt` and `hoverAt`, or `from` and `to` for `dragAt`, replay included. Points are in the same space as `screen.tapAt` and `boundingBox()`, rounded and clamped to the viewport.
+  
+  `ActionEvent` is now a union keyed by `action`, typed `ActionName` or `tool:<name>` instead of `string`. New `ActionName` and `ActionDetails` types.
+
+- [#1474](https://github.com/tester-army/e2e/pull/1474) [`d10655f`](https://github.com/tester-army/e2e/commit/d10655f3430f867172fdedba2ad8cdceeb4ceaeb) Thanks [@samanyudas](https://github.com/samanyudas)! - `e2e run` without the `list` reporter prints each run error on stderr as `CODE: message`. Before, `--reporter junit` or `markdown` with a test file that failed to collect, a config that failed to load, or no model for the agent exited 2 and printed nothing.
+
+- [#1481](https://github.com/tester-army/e2e/pull/1481) [`f078364`](https://github.com/tester-army/e2e/commit/f0783641ef4250b62b8b7600be7384dffc4be2ea) Thanks [@okwasniewski](https://github.com/okwasniewski)! - The `list` summary names the first 10 `app.screenshot` files in a `Screenshots` row, then counts the rest. The MCP `screenshot` tool takes an optional `path` (a `.png`, relative to the project root): it saves the masked full-resolution screenshot there and returns the absolute path.
+
+- [#1470](https://github.com/tester-army/e2e/pull/1470) [`b8485ba`](https://github.com/tester-army/e2e/commit/b8485ba2e76d3e37e304f4ec7d863ef6f3ba251c) Thanks [@samanyudas](https://github.com/samanyudas)! - `run.summary.executed` now counts a serial member whose body ran, the same way it counts an ordinary test. Before, it left out a member that called `test.skip()` in its body, and a member that ran in one group attempt before a retry skipped it behind a failed predecessor. The run's telemetry cache tiers count them the same way.
+
+- [#1483](https://github.com/tester-army/e2e/pull/1483) [`0b84d35`](https://github.com/tester-army/e2e/commit/0b84d35f8cbcbc1a217850ce7aaafde30caa27ea) Thanks [@okwasniewski](https://github.com/okwasniewski)! - `open_session` now names the app command it started: its executable, the URL it answers on, the port a free-port `url` was assigned, and the `env` and `inheritEnv` names it got. It prints no `args` and no `env` values. It also says the config reads the MCP server's environment, not the agent's shell. `e2e run` prints the URL on the app command's setup line, and the `app` setup event carries it as `url`.
+
+- [#1471](https://github.com/tester-army/e2e/pull/1471) [`80c2fda`](https://github.com/tester-army/e2e/commit/80c2fda245836b0a0139475cd2eff9c7cbe9703a) Thanks [@samanyudas](https://github.com/samanyudas)! - A string a test or the config writes to `process.stdout` or `process.stderr` with an encoding, such as `hex`, `base64`, or `latin1`, now prints decoded from a worker, as Node prints it. The runner process decoded only `hex`, `base64`, and `base64url`, and now decodes every encoding Node accepts too. Bytes that end inside a UTF-8 character no longer print after the string written next.
+
 ## 0.22.0
 
 ### Minor Changes
